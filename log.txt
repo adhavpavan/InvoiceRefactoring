@@ -1,0 +1,2 @@
+Installed chaincodes on peer:
+Package ID: gated_community_1:f3a24622311dd15dd1ab8f68bd28b4c6044f48457f4f16afe223fb5b46453f73, Label: gated_community_1
