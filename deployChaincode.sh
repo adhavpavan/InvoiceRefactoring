@@ -49,7 +49,7 @@ setGlobalsForPeer1Org2() {
 
 presetup() {
     echo Vendoring Go dependencies ...
-    pushd ./artifacts/src/github.com/gated_community/go
+    pushd ./artifacts/src/github.com/invoice_refactoring/go
     GO111MODULE=on go mod vendor
     popd
     echo Finished vendoring Go dependencies
@@ -59,8 +59,8 @@ presetup() {
 CHANNEL_NAME="mychannel"
 CC_RUNTIME_LANGUAGE="golang"
 VERSION="1"
-CC_SRC_PATH="./artifacts/src/github.com/gated_community/go"
-CC_NAME="gated_community"
+CC_SRC_PATH="./artifacts/src/github.com/invoice_refactoring/go"
+CC_NAME="invoice_refactoring"
 
 packageChaincode() {
     rm -rf ${CC_NAME}.tar.gz
@@ -285,7 +285,7 @@ chaincodeQuery() {
 # chaincodeQuery
 
 # Run this function if you add any new dependency in chaincode
-presetup
+# presetup
 
 packageChaincode
 installChaincode
@@ -297,7 +297,7 @@ checkCommitReadyness
 commitChaincodeDefination
 queryCommitted
 chaincodeInvokeInit
-# sleep 5
-# chaincodeInvoke
-# sleep 3
-# chaincodeQuery
+sleep 5
+chaincodeInvoke
+sleep 3
+chaincodeQuery

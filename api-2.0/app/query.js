@@ -46,12 +46,12 @@ const query = async (channelName, chaincodeName, args, fcn, username, org_name) 
         let result;
 
         switch (fcn) {
-            case "GetVisitorById":
+            case "GetInvoiceById":
                 result = await contract.evaluateTransaction(fcn, args[0]);
 
                 break;
 
-            case "getHistoryForAsset":
+            case "GetHistoryForAsset":
                 result = await contract.evaluateTransaction(fcn, args[0]);
 
                 break;

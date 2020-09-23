@@ -67,17 +67,17 @@ const invokeTransaction = async (channelName, chaincodeName, fcn, args, username
 
 
         switch (fcn) {
-            case "CreateVisitor":
+            case "CreateInvoice":
                 result = await contract.submitTransaction(fcn, args[0]);
                 // obj = JSON.stringify(JSON.parse(args[0]))
                 // console.log(JSON.parse(args[0]))
-                message = `Successfully added the Visitor Data`
+                message = `Successfully added the Invoice Data`
                 break;
             case "UpdateVisitor":
-                result = await contract.submitTransaction(fcn, args[0], args[1]);
+                result = await contract.submitTransaction(fcn, args[0], args[1], args[2]);
                 // obj = JSON.stringify(JSON.parse(args[0]))
                 // console.log(JSON.parse(args[0]))
-                message = `Successfully updated the Visitor Data`
+                message = `Successfully updated the Invoice Data`
                 break;
            
             // case ""
@@ -86,29 +86,6 @@ const invokeTransaction = async (channelName, chaincodeName, fcn, args, username
                 return utils.getResponsePayload("Please send correct chaincode function name", null, falsw)
                 break;
         }
-        // if (fcn === "createCar" || fcn === "createPrivateCarImplicitForOrg1"
-        //     || fcn == "createPrivateCarImplicitForOrg2") {
-        //     result = await contract.submitTransaction(fcn, args[0], args[1], args[2], args[3], args[4]);
-        //     message = `Successfully added the car asset with key ${args[0]}`
-
-        // } else if (fcn === "changeCarOwner") {
-        //     result = await contract.submitTransaction(fcn, args[0], args[1]);
-        //     message = `Successfully changed car owner with key ${args[0]}`
-        // } else if (fcn == "createPrivateCar" || fcn =="updatePrivateData") {
-        //     console.log(`Transient data is : ${transientData}`)
-        //     let carData = JSON.parse(transientData)
-        //     console.log(`car data is : ${JSON.stringify(carData)}`)
-        //     let key = Object.keys(carData)[0]
-        //     const transientDataBuffer = {}
-        //     transientDataBuffer[key] = Buffer.from(JSON.stringify(carData.car))
-        //     result = await contract.createTransaction(fcn)
-        //         .setTransient(transientDataBuffer)
-        //         .submit()
-        //     message = `Successfully submitted transient data`
-        // }
-        // else {
-        //     return `Invocation require either createCar or changeCarOwner as function but got ${fcn}`
-        // }
 
         await gateway.disconnect();
 
