@@ -73,13 +73,18 @@ const invokeTransaction = async (channelName, chaincodeName, fcn, args, username
                 // console.log(JSON.parse(args[0]))
                 message = `Successfully added the Invoice Data`
                 break;
-            case "UpdateVisitor":
-                result = await contract.submitTransaction(fcn, args[0], args[1], args[2]);
-                // obj = JSON.stringify(JSON.parse(args[0]))
-                // console.log(JSON.parse(args[0]))
-                message = `Successfully updated the Invoice Data`
-                break;
-           
+            case "UpdateInvoice":
+                // if (org_name == "Org1") {
+                //     return { message: "Only Organization 2 is allowed to add transactions" }
+                // } else {
+                    result = await contract.submitTransaction(fcn, args[0], args[1], args[2]);
+                    // obj = JSON.stringify(JSON.parse(args[0]))
+                    // console.log(JSON.parse(args[0]))
+                    message = `Successfully updated the Invoice Data`
+                    break;
+                // }
+
+
             // case ""
 
             default:

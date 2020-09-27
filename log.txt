@@ -1,2 +1,2 @@
 Installed chaincodes on peer:
-Package ID: invoice_refactoring_1:66b1b4e99e22cc39e17619c97fe915e9cfa86eb00c2a08b5a0cda873ab971fae, Label: invoice_refactoring_1
+Package ID: invoice_refactoring_1:5fb1f5f82adda75cd3b47d534917e07524597158148f73d9716a7ac0a216cc90, Label: invoice_refactoring_1

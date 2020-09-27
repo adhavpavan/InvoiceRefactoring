@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Form, FormGroup, Label, Input, Button, Spinner, Col, CustomInput, Table, Card } from 'reactstrap'
-
+// import AddTransaction from './AddTransaction'
 import axios from 'axios'
 import jwt from 'jsonwebtoken'
+// import ContractView from './ContractView.js';
+import InvoiceView from './InvoiceView'
 
+
+import Transaction from './Transaction'
 function App() {
 
   const [userName, setUserName] = useState('')
@@ -20,11 +24,27 @@ function App() {
   const [mobileNumber, setMobileNumber] = useState('')
   const [photoURL, setPhotoURL] = useState('')
   const [isQurantined, setIsQurantined] = useState(false)
-  const [visitorList, setVisitorList] = useState([])
+  const [invoiceList, setInvoiceList] = useState([])
   const [visitirInfoData, setVisitirInfoData] = useState(null)
-
+  const [modal, setModal] = useState(false);
   const [searchVisitorId, setSearchVisitorId] = useState('')
+  const [transactioModel, setTransactioModel] = useState(false)
 
+  const [selectedInvoice, setSelectedInvoice] = useState(null)
+
+
+  const toggleModal = () => setModal(!modal);
+  const toggleTransactionModal = ()=> setTransactioModel(!transactioModel)
+  // const toggleApproveModel = () => setApproveModel(!approveModel)
+  const viewInvoice = (index) => {
+    setModal(!modal);
+    setSelectedInvoice(invoiceList[index])
+  }
+
+  const AddTransaction = (index) => {
+    setTransactioModel(!transactioModel)
+    setSelectedInvoice(invoiceList[index])
+  }
 
   const inputChangeHandler = (value, fieldName) => {
 
@@ -36,7 +56,7 @@ function App() {
       case 'mobileNumber': setMobileNumber(value); break;
       case 'photoURL': setPhotoURL(value); break;
       case 'searchVisitorId': setSearchVisitorId(value); break;
-      case 'isSecurityGuard': setIsSecurityGuard(!isSecurityGuard); console.log(`switch  SG value is : ${isSecurityGuard}`); break;
+      // case 'isSecurityGuard': setIsSecurityGuard(!isSecurityGuard); console.log(`switch  SG value is : ${isSecurityGuard}`); break;
       case 'isQurantined': setIsQurantined(!isQurantined); console.log(`switch value is : ${isQurantined}`); break;
       default:
         break;
@@ -79,44 +99,51 @@ function App() {
     setIsSecurityGuard(false)
   }
 
-  const updateQuarantineStatus = (i) => {
-    // let visitorInfo = {
-    //   "id": visitor.id,
-    //   "Name": visitor.name,
-    //   "mobileNumber": mobileNumber,
-    //   "photoURL": photoURL,
-    //   "isQuarantined": isQurantined,
-    //   "docType": "Visitor",
-    //   "creator": localStorage.getItem("username")
-    // }
-    let visitor = visitorList[i]
-    visitor.IsQuarantined=visitorList[i].IsQuarantined?false:true
-
-    //svisitor.isQuarantined = visitorList[i].isQuarantined?false:true
-    console.log(`visitor data is : ${JSON.stringify(visitor)}`)
-    let body = {
-      "fcn": "CreateVisitor",
-      "peers": ["peer0.org1.example.com", "peer0.org2.example.com"],
-      "chaincodeName": "gated_community",
-      "channelName": "mychannel",
-      "args": [`${JSON.stringify(visitor)}`]
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      setIsLoggedIn(true)
+      getInvoiceList()
     }
-    setisLoading(true)
-    axios.post("http://localhost:4000/channels/mychannel/chaincodes/gated_community", body, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`
-      }
-    }).then(response => {
-      console.log(`response id ----------- ${response}`)
-      getVisitorList()
-      // setisLoading(false)
-    }).catch(err => {
+  }, [])
 
-      setisLoading(false)
-    })
+  // const updateQuarantineStatus = (i) => {
+  //   // let visitorInfo = {
+  //   //   "id": visitor.id,
+  //   //   "Name": visitor.name,
+  //   //   "mobileNumber": mobileNumber,
+  //   //   "photoURL": photoURL,
+  //   //   "isQuarantined": isQurantined,
+  //   //   "docType": "Visitor",
+  //   //   "creator": localStorage.getItem("username")
+  //   // }
+  //   let visitor = visitorList[i]
+  //   visitor.IsQuarantined=visitorList[i].IsQuarantined?false:true
 
-  }
+  //   //svisitor.isQuarantined = visitorList[i].isQuarantined?false:true
+  //   console.log(`visitor data is : ${JSON.stringify(visitor)}`)
+  //   let body = {
+  //     "fcn": "CreateVisitor",
+  //     "peers": ["peer0.org1.example.com", "peer0.org2.example.com"],
+  //     "chaincodeName": "gated_community",
+  //     "channelName": "mychannel",
+  //     "args": [`${JSON.stringify(visitor)}`]
+  //   }
+  //   setisLoading(true)
+  //   axios.post("http://localhost:4000/channels/mychannel/chaincodes/gated_community", body, {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${localStorage.getItem("token")}`
+  //     }
+  //   }).then(response => {
+  //     console.log(`response id ----------- ${response}`)
+  //     getVisitorList()
+  //     // setisLoading(false)
+  //   }).catch(err => {
+
+  //     setisLoading(false)
+  //   })
+
+  // }
 
   const addVisitor = () => {
 
@@ -156,7 +183,7 @@ function App() {
       }
     }).then(response => {
       console.log(`response id ----------- ${response}`)
-      getVisitorList()
+      getInvoiceList()
       // setisLoading(false)
     }).catch(err => {
 
@@ -189,6 +216,7 @@ function App() {
 
 
 
+
           let payload = jwt.decode(response.data.token)
           console.log(payload)
           localStorage.setItem("username", payload.username)
@@ -199,7 +227,7 @@ function App() {
           setIsLoggedIn(true)
           // history.push('/admin/index')
 
-          getVisitorList()
+          getInvoiceList()
 
           // axios.get("http://localhost:4000/channels/mychannel/chaincodes/gated_community?args=[]&peer=peer0.org1.example.com&fcn=GetContractsForQuery", {
           //   headers: {
@@ -226,9 +254,9 @@ function App() {
   }
 
 
-  const getVisitorList = () => {
+  const getInvoiceList = () => {
 
-    axios.get("http://localhost:4000/channels/mychannel/chaincodes/gated_community?args=[]&peer=peer0.org1.example.com&fcn=GetContractsForQuery", {
+    axios.get("http://localhost:4000/channels/mychannel/chaincodes/invoice_refactoring?args=[]&peer=peer0.org1.example.com&fcn=GetContractsForQuery", {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -238,7 +266,7 @@ function App() {
         setisLoading(false)
         console.log(response.data.result)
         if (response && response.data && response.data.result && response.data.result.length && typeof response.data.result != 'string') {
-          setVisitorList(response.data.result)
+          setInvoiceList(response.data.result)
 
         }
       }).catch(err => {
@@ -261,8 +289,11 @@ function App() {
   return (
     <div className="App" style={{ paddingTop: 30, paddingLeft: 100, textAlign: 'center', alignItems: 'center', position: 'absolute' }}>
       {isLoggedIn ? <Button color="primary" onClick={() => { logout() }} style={{ margin: 40 }}>Logout</Button> :
+
+
         <Form  >
           <FormGroup>
+              {/* <AddTransaction/> */}
             <Label for="exampleEmail" hidden>Email</Label>
             <Input onChange={e => { inputChangeHandler(e.target.value, 'userName') }} placeholder="Email" />
           </FormGroup>
@@ -272,19 +303,18 @@ function App() {
             <Input type="password" onChange={e => { inputChangeHandler(e.target.value, 'password') }} placeholder="Password" />
           </FormGroup>
           {' '}
-          <FormGroup row>
+          {/* <FormGroup row>
             <Col sm={2}>
               <CustomInput type="checkbox" value={isSecurityGuard} checked={isSecurityGuard} onChange={e => { inputChangeHandler(e.target.value, 'isSecurityGuard') }} id="exampleCustomCheckbox3" label="" />
-              {/* <CustomInput type="checkbox" value={isSecurityGuard} onChange={e => { inputChangeHandler(e.target.value, 'isSecurityGuard') }} id="exampleCustomCheckbox2" label="" /> */}
 
             </Col>
             <Col sm={10} style={{ paddingTop: 20 }}>
               <Label >Is Security Login?</Label>
             </Col>
-          </FormGroup>
+          </FormGroup> */}
           {' '}
           <FormGroup>
-            <Button onClick={() => { login() }}>Submit</Button>
+            <Button onClick={() => { login() }}>Login</Button>
 
           </FormGroup>
           {' '}
@@ -296,7 +326,9 @@ function App() {
 
       {!isSecurityGuard && isLoggedIn ?
         <div>
-
+          <InvoiceView modal={modal} toggle={toggleModal} invoiceDetails={selectedInvoice} />
+          {/* <AddTransaction modal={transactioModel} toggle={toggleTransactionModal} invoiceDetails={selectedInvoice}/> */}
+          <Transaction modal={transactioModel} toggle={toggleTransactionModal} invoiceDetails={selectedInvoice}/>
           <Form>
             <FormGroup row>
               <Label sm={4}>Visitor Id</Label>
@@ -332,7 +364,7 @@ function App() {
               </Col>
             </FormGroup>
 
-            <Button color="primary" onClick={() => addVisitor()}>Add Visitor</Button>{' '}
+            <Button color="primary" onClick={() => addVisitor()}>Add Invoice</Button>{' '}
           </Form>
 
           <div style={{ padding: 30 }}>
@@ -342,24 +374,26 @@ function App() {
                   <th>#</th>
                   <th>ID</th>
                   <th>Name</th>
-                  <th>Mobile Number</th>
+                  <th>Status</th>
                   <th>Photo URL</th>
                   <th>Is Quarantined</th>
-                  <th> Action</th>
+                  <th> View</th>
+                  <th>Action</th>
                 </tr>
               </thead>
 
-              {visitorList && visitorList.length ? visitorList.map((visitor, i) => {
+              {invoiceList && invoiceList.length ? invoiceList.map((invoice, i) => {
                 return (
                   <tbody>
                     <tr>
                       <th scope="row">{i + 1}</th>
-                      <td>{visitor.id}</td>
-                      <td>{visitor.Name}</td>
-                      <td>{visitor.mobileNumber}</td>
-                      <td>{visitor.photoURL}</td>
-                      <td>{visitor.IsQuarantined ? "True" : "False"}</td>
-                      <td> <Button color="primary" onClick={() => updateQuarantineStatus(i)}>Update Status</Button>{' '}</td>
+                      <td>{invoice.id}</td>
+                      <td>{invoice.consumer.name}</td>
+                      <td>{invoice.Status}</td>
+                      <td>{invoice.file.url}</td>
+                      <td>{invoice.amount}</td>
+                      <td> <Button color="primary" onClick={() => viewInvoice(i)}>View Invoice</Button>{' '}</td>
+                      <td> <Button color="primary" onClick={() => AddTransaction(i)}>Add Tx</Button>{' '}</td>
                     </tr>
                   </tbody>
                 )

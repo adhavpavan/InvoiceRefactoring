@@ -59,13 +59,13 @@ const query = async (channelName, chaincodeName, args, fcn, username, org_name) 
                 let queryString;
                 console.log(`username is ${username}`)
 
-                if (username == 'superuser') {
-                    queryString = "{\"selector\":{\"docType\":\"Visitor\"}}"
+                // if (username == 'superuser') {
+                    queryString = "{\"selector\":{\"docType\":\"Invoice\"}}"
                     console.log(`itssuperuser`)
-                } else {
+                // } else {
 
-                    queryString = `{\"selector\":{\"docType\":\"Visitor\",\"creator\":\"${username}\"}}`
-                }
+                //     queryString = `{\"selector\":{\"docType\":\"Visitor\",\"creator\":\"${username}\"}}`
+                // }
 
                 // let qs3= "{\"selector\":{\"EndDate\":{\"$gt\":1}}}"  {\"docType\":\"marble\",\"owner\":\"tom\"}
                 result = await contract.evaluateTransaction(fcn, queryString);
