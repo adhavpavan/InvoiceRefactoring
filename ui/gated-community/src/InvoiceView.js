@@ -36,6 +36,7 @@ const InvoiceView = (props) => {
                         <ModalBody >
                             {/* {JSON.stringify(invoiceDetails)} */}
                             <Card className="py-4 px-md-4">
+                                {JSON.stringify(invoiceDetails)}
 
 
                                 <FormGroup row>
@@ -63,7 +64,7 @@ const InvoiceView = (props) => {
                                 </FormGroup>
                                 <FormGroup row>
                                     <Col sm={3}>
-                                        <Label >Consumer</Label>
+                                        <Label >Consumer Name</Label>
                                     </Col>
                                     <Col sm={1}>
                                         <Label >:</Label>

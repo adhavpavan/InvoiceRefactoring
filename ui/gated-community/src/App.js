@@ -10,6 +10,8 @@ import InvoiceView from './InvoiceView'
 
 
 import Transaction from './Transaction'
+import AddInvoice from './AddInvoice'
+
 function App() {
 
   const [userName, setUserName] = useState('')
@@ -29,12 +31,14 @@ function App() {
   const [modal, setModal] = useState(false);
   const [searchVisitorId, setSearchVisitorId] = useState('')
   const [transactioModel, setTransactioModel] = useState(false)
+  const [addInvoiceModel, setAddInvoiceModel] = useState(false)
 
   const [selectedInvoice, setSelectedInvoice] = useState(null)
 
 
   const toggleModal = () => setModal(!modal);
-  const toggleTransactionModal = ()=> setTransactioModel(!transactioModel)
+  const toggleTransactionModal = () => setTransactioModel(!transactioModel)
+  const toggleAddInvoiceModel = () => setAddInvoiceModel(!addInvoiceModel)
   // const toggleApproveModel = () => setApproveModel(!approveModel)
   const viewInvoice = (index) => {
     setModal(!modal);
@@ -44,6 +48,11 @@ function App() {
   const AddTransaction = (index) => {
     setTransactioModel(!transactioModel)
     setSelectedInvoice(invoiceList[index])
+  }
+
+  const AddInvoiceView = () => {
+    setAddInvoiceModel(!addInvoiceModel)
+    // setSelectedInvoice(invoiceList[index])
   }
 
   const inputChangeHandler = (value, fieldName) => {
@@ -293,7 +302,7 @@ function App() {
 
         <Form  >
           <FormGroup>
-              {/* <AddTransaction/> */}
+            {/* <AddTransaction/> */}
             <Label for="exampleEmail" hidden>Email</Label>
             <Input onChange={e => { inputChangeHandler(e.target.value, 'userName') }} placeholder="Email" />
           </FormGroup>
@@ -328,46 +337,43 @@ function App() {
         <div>
           <InvoiceView modal={modal} toggle={toggleModal} invoiceDetails={selectedInvoice} />
           {/* <AddTransaction modal={transactioModel} toggle={toggleTransactionModal} invoiceDetails={selectedInvoice}/> */}
-          <Transaction modal={transactioModel} toggle={toggleTransactionModal} invoiceDetails={selectedInvoice}/>
+          <Transaction modal={transactioModel} toggle={toggleTransactionModal} invoiceDetails={selectedInvoice} />
+          <AddInvoice modal={addInvoiceModel} toggle={toggleAddInvoiceModel} />
           <Form>
-            <FormGroup row>
-              <Label sm={4}>Visitor Id</Label>
-              <Col sm={8}>
-                <Input value={visitorId} onChange={e => { inputChangeHandler(e.target.value, 'visitorId') }} placeholder="Enter Contract Type " />
-              </Col>
-            </FormGroup>
+            <Card style={{padding:20, margin:20}}>
+
+
 
             <FormGroup row>
-              <Label sm={4}>Name</Label>
-              <Col sm={8}>
-                <Input value={name} onChange={e => { inputChangeHandler(e.target.value, 'name') }} placeholder="Enter First Party Name " />
+              <Col sm={3}>
+                <Label >User Name</Label>
+              </Col>
+              <Col sm={1}>
+                <Label >:</Label>
+              </Col>
+              <Col sm={2}>
+                <Label >{localStorage.getItem("username")}</Label>
               </Col>
             </FormGroup>
             <FormGroup row>
-              <Label sm={4}>Mobile No</Label>
-              <Col sm={8}>
-                <Input type="text" value={mobileNumber} onChange={e => { inputChangeHandler(e.target.value, 'mobileNumber') }} placeholder="Enter Second Party Name" />
+              <Col sm={3}>
+                <Label >Organization</Label>
+              </Col>
+              <Col sm={1}>
+                <Label >:</Label>
+              </Col>
+              <Col sm={2}>
+                <Label >{localStorage.getItem("organisation")}</Label>
               </Col>
             </FormGroup>
-            <FormGroup row>
-              <Label sm={4}>Photo Url</Label>
-              <Col sm={8}>
-                <Input type="text" value={photoURL} onChange={e => { inputChangeHandler(e.target.value, 'photoURL') }} placeholder="Enter Second Party Name" />
-              </Col>
-            </FormGroup>
-            <FormGroup row>
-              <Col sm={4}>
-                <Label >Qurantined?</Label>
-              </Col>
-              <Col sm={1} style={{ paddingTop: -60 }}>
-                <CustomInput type="checkbox" value={isQurantined} onChange={e => { inputChangeHandler(e.target.value, 'isQurantined') }} id="exampleCustomCheckbox2" label="" />
-              </Col>
-            </FormGroup>
+            </Card>
 
-            <Button color="primary" onClick={() => addVisitor()}>Add Invoice</Button>{' '}
+
+            <Button color="primary" onClick={() => AddInvoiceView()}>Add Invoice</Button>{' '}
           </Form>
 
           <div style={{ padding: 30 }}>
+            <Card > 
             <Table responsive >
               <thead>
                 <tr>
@@ -400,6 +406,7 @@ function App() {
 
               }) : null}
             </Table>
+            </Card>
           </div>
 
         </div>
@@ -408,75 +415,7 @@ function App() {
         : null}
 
 
-      {isLoggedIn && isSecurityGuard ?
-        <div style={{ padding: 60 }}>
-          <Card style={{ padding: 60 }}>
-            <Form>
-              <FormGroup row>
-                {/* <Label for="exampleEmail" sm={2}>Email</Label> */}
-                <Col sm={5}>
-                  <Input type="text" onChange={e => { inputChangeHandler(e.target.value, 'searchVisitorId') }} placeholder="Enter Visitor Id" />
-                </Col>
-
-                <Col sm={7}>
-                  {/* <Input type="email" name="email" id="exampleEmail" placeholder="with a placeholder" /> */}
-                  <Button color="primary" disabled={searchVisitorId == "" || searchVisitorId == null} onClick={() => getVisitorData()}>Get Visitor Details</Button>{' '}
-                </Col>
-              </FormGroup>
-              {visitirInfoData && visitirInfoData.Name ?
-                <Card>
-                  <div style={{ padding: 10 }}>
-
-                    <FormGroup row>
-                      <Label for="exampleEmail" sm={4}>Name</Label>
-                      <Col sm={8}>
-                        <Label for="exampleEmail" >{visitirInfoData.Name}</Label>
-                      </Col>
-                    </FormGroup>
-                    <FormGroup row>
-                      <Label for="exampleEmail" sm={4}>ID</Label>
-                      <Col sm={8}>
-                        <Label for="exampleEmail" >{visitirInfoData.id}</Label>
-                      </Col>
-                    </FormGroup>
-                    <FormGroup row>
-                      <Label for="exampleEmail" sm={4}>Mobile Number</Label>
-                      <Col sm={8}>
-                        <Label for="exampleEmail" >{visitirInfoData.mobileNumber}</Label>
-                      </Col>
-                    </FormGroup>
-                    <FormGroup row>
-                      <Col sm={4}>
-                        <Label >Photo URL</Label>
-                      </Col>
-                      <Col sm={1}>
-                        <Label >:</Label>
-                      </Col>
-                      <Col sm={7}>
-                        <Label for="exampleEmail" >{visitirInfoData.photoURL}</Label>
-                      </Col>
-                    </FormGroup>
-                    <FormGroup row>
-                      <Col sm={4}>
-                        <Label >Querentined?</Label>
-                      </Col>
-                      <Col sm={1}>
-                        <Label >:</Label>
-                      </Col>
-                      <Col sm={7}>
-                        <Label for="exampleEmail" >{visitirInfoData.isQuarantined ? "Yes" : "No"}</Label>
-                      </Col>
-                    </FormGroup>
-                  </div>
-
-                </Card>
-                : null}
-            </Form>
-
-          </Card>
-        </div>
-
-        : null}
+     
 
 
 
