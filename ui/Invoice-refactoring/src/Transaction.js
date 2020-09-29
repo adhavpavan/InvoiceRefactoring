@@ -12,7 +12,8 @@ const Transaction = (props) => {
     className,
     modal,
     toggle,
-    invoiceDetails
+    invoiceDetails,
+    updateData
   } = props;
 
   const [isLoading, setIsLoading] = useState(false)
@@ -89,6 +90,7 @@ const Transaction = (props) => {
         // getVisitorList()
         setIsLoading(false)
         toggle()
+        updateData()
       }).catch(err => {
 
         toggle()
@@ -119,7 +121,7 @@ const Transaction = (props) => {
 
   return (
     <div>
-      <h1>Pavan</h1>
+      {/* <h1>Pavan</h1> */}
       {/* <Button color="danger" onClick={toggle}>{buttonLabel}</Button> */}
       <Modal isOpen={modal} toggle={toggle} className={className} size={'lg'}>
         <ModalHeader toggle={toggle}>Add Transaction Details</ModalHeader>

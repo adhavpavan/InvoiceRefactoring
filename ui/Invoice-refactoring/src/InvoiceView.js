@@ -36,7 +36,7 @@ const InvoiceView = (props) => {
                         <ModalBody >
                             {/* {JSON.stringify(invoiceDetails)} */}
                             <Card className="py-4 px-md-4">
-                                {JSON.stringify(invoiceDetails)}
+                                {/* {JSON.stringify(invoiceDetails)} */}
 
 
                                 <FormGroup row>
@@ -148,7 +148,7 @@ const InvoiceView = (props) => {
                                     </Col>
                                     <Col sm={8}>
                                         {/* <Label href={invoiceDetails.document.url} >{"Open File"}</Label> */}
-                                        <a href={invoiceDetails.file.url} target="_blank">Show File</a>
+                                        <a href={"http://localhost:4000/" +invoiceDetails.file.url} target="_blank">Show File</a>
                                     </Col>
                                 </FormGroup>
 

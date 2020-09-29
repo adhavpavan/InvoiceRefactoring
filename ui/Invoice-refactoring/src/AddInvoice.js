@@ -14,7 +14,8 @@ const AddInvoice = (props) => {
     buttonLabel,
     className,
     modal,
-    toggle
+    toggle,
+    updateData
   } = props;
 
   const [id, setId] = useState('')
@@ -139,8 +140,8 @@ const AddInvoice = (props) => {
       "fcn": "CreateInvoice",
       "chaincodeName": "invoice_refactoring",
       "channelName": "mychannel",
-      "args": [`${JSON.stringify(invoice)}`]
-      // "args": [contract, document]
+      // "args": [`${JSON.stringify(invoice)}`]
+      "args": [invoice, document]
       // "args": [`${JSON.stringify(contract)}`, document]
     }
 
@@ -154,7 +155,7 @@ const AddInvoice = (props) => {
       }
     })
       .then(response => {
-
+        updateData()
         console.log(`response id ----------- ${response}`)
         // getVisitorList()
         setIsLoading(false)
@@ -261,42 +262,42 @@ const AddInvoice = (props) => {
                   <FormGroup row>
                     <Label for="examplePassword" sm={3}>Customer Name</Label>
                     <Col sm={9}>
-                      <Input type="text" invalid={isValidating && customerName == ''} onChange={e => { inputChangeHandler(e.target.value, 'customerName') }} placeholder="Enter Second Party Name" />
+                      <Input type="text" invalid={isValidating && customerName == ''} onChange={e => { inputChangeHandler(e.target.value, 'customerName') }} placeholder="Enter customer Name" />
                       <FormFeedback>*Required</FormFeedback>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
                     <Label for="examplePassword" sm={3}>Customer ID</Label>
                     <Col sm={9}>
-                      <Input type="text" invalid={isValidating && customerId == ''} onChange={e => { inputChangeHandler(e.target.value, 'customerId') }} placeholder="Enter Second Party Name" />
+                      <Input type="text" invalid={isValidating && customerId == ''} onChange={e => { inputChangeHandler(e.target.value, 'customerId') }} placeholder="Enter customer ID" />
                       <FormFeedback>*Required</FormFeedback>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
                     <Label for="examplePassword" sm={3}>Address</Label>
                     <Col sm={9}>
-                      <Input type="text" invalid={isValidating && address == ''} onChange={e => { inputChangeHandler(e.target.value, 'address') }} placeholder="Enter Second Party Name" />
+                      <Input type="text" invalid={isValidating && address == ''} onChange={e => { inputChangeHandler(e.target.value, 'address') }} placeholder="Enter customer address" />
                       <FormFeedback>*Required</FormFeedback>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
                     <Label for="examplePassword" sm={3}>Phone</Label>
                     <Col sm={9}>
-                      <Input type="text" invalid={isValidating && phone == ''} onChange={e => { inputChangeHandler(e.target.value, 'phone') }} placeholder="Enter Second Party Name" />
+                      <Input type="text" invalid={isValidating && phone == ''} onChange={e => { inputChangeHandler(e.target.value, 'phone') }} placeholder="Entercustomer phone number" />
                       <FormFeedback>*Required</FormFeedback>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
                     <Label for="examplePassword" sm={3}>Product Name</Label>
                     <Col sm={9}>
-                      <Input type="text" invalid={isValidating && productName == ''} onChange={e => { inputChangeHandler(e.target.value, 'productName') }} placeholder="Enter Second Party Name" />
+                      <Input type="text" invalid={isValidating && productName == ''} onChange={e => { inputChangeHandler(e.target.value, 'productName') }} placeholder="Enter product name" />
                       <FormFeedback>*Required</FormFeedback>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
                     <Label for="examplePassword" sm={3}>Product Amount</Label>
                     <Col sm={9}>
-                      <Input type="text" invalid={isValidating && productAmount == ''} onChange={e => { inputChangeHandler(e.target.value, 'productAmount') }} placeholder="Enter Second Party Name" />
+                      <Input type="text" invalid={isValidating && productAmount == ''} onChange={e => { inputChangeHandler(e.target.value, 'productAmount') }} placeholder="Enter product amount" />
                       <FormFeedback>*Required</FormFeedback>
                     </Col>
                   </FormGroup>

@@ -262,6 +262,11 @@ function App() {
       })
   }
 
+  const updateData = () => {
+
+    getInvoiceList()
+  }
+
 
   const getInvoiceList = () => {
 
@@ -312,16 +317,6 @@ function App() {
             <Input type="password" onChange={e => { inputChangeHandler(e.target.value, 'password') }} placeholder="Password" />
           </FormGroup>
           {' '}
-          {/* <FormGroup row>
-            <Col sm={2}>
-              <CustomInput type="checkbox" value={isSecurityGuard} checked={isSecurityGuard} onChange={e => { inputChangeHandler(e.target.value, 'isSecurityGuard') }} id="exampleCustomCheckbox3" label="" />
-
-            </Col>
-            <Col sm={10} style={{ paddingTop: 20 }}>
-              <Label >Is Security Login?</Label>
-            </Col>
-          </FormGroup> */}
-          {' '}
           <FormGroup>
             <Button onClick={() => { login() }}>Login</Button>
 
@@ -337,75 +332,81 @@ function App() {
         <div>
           <InvoiceView modal={modal} toggle={toggleModal} invoiceDetails={selectedInvoice} />
           {/* <AddTransaction modal={transactioModel} toggle={toggleTransactionModal} invoiceDetails={selectedInvoice}/> */}
-          <Transaction modal={transactioModel} toggle={toggleTransactionModal} invoiceDetails={selectedInvoice} />
-          <AddInvoice modal={addInvoiceModel} toggle={toggleAddInvoiceModel} />
+          <Transaction modal={transactioModel} toggle={toggleTransactionModal} invoiceDetails={selectedInvoice} updateData={updateData}/>
+          <AddInvoice modal={addInvoiceModel} toggle={toggleAddInvoiceModel} updateData={updateData} />
           <Form>
-            <Card style={{padding:20, margin:20}}>
+            <Card style={{ padding: 20, margin: 20 }}>
 
 
 
-            <FormGroup row>
-              <Col sm={3}>
-                <Label >User Name</Label>
-              </Col>
-              <Col sm={1}>
-                <Label >:</Label>
-              </Col>
-              <Col sm={2}>
-                <Label >{localStorage.getItem("username")}</Label>
-              </Col>
-            </FormGroup>
-            <FormGroup row>
-              <Col sm={3}>
-                <Label >Organization</Label>
-              </Col>
-              <Col sm={1}>
-                <Label >:</Label>
-              </Col>
-              <Col sm={2}>
-                <Label >{localStorage.getItem("organisation")}</Label>
-              </Col>
-            </FormGroup>
+              <FormGroup row>
+                <Col sm={3}>
+                  <Label >User Name</Label>
+                </Col>
+                <Col sm={1}>
+                  <Label >:</Label>
+                </Col>
+                <Col sm={2}>
+                  <Label >{localStorage.getItem("username")}</Label>
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+                <Col sm={3}>
+                  <Label >Organization</Label>
+                </Col>
+                <Col sm={1}>
+                  <Label >:</Label>
+                </Col>
+                <Col sm={2}>
+                  <Label >{localStorage.getItem("organisation")}</Label>
+                </Col>
+              </FormGroup>
             </Card>
 
-
-            <Button color="primary" onClick={() => AddInvoiceView()}>Add Invoice</Button>{' '}
+            {localStorage.getItem("organisation") == "Org1" ? 
+             <Button color="primary" onClick={() => AddInvoiceView()}>Add Invoice</Button>
+            : null}
+           
           </Form>
 
           <div style={{ padding: 30 }}>
-            <Card > 
-            <Table responsive >
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th>Status</th>
-                  <th>Photo URL</th>
-                  <th>Is Quarantined</th>
-                  <th> View</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
+            <Card >
+              <Table responsive >
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Invoice URL</th>
+                    <th>Amount</th>
+                    <th> View</th>
+                    {localStorage.getItem("organisation") == "Org2" ? <th>Action</th> : null}
 
-              {invoiceList && invoiceList.length ? invoiceList.map((invoice, i) => {
-                return (
-                  <tbody>
-                    <tr>
-                      <th scope="row">{i + 1}</th>
-                      <td>{invoice.id}</td>
-                      <td>{invoice.consumer.name}</td>
-                      <td>{invoice.Status}</td>
-                      <td>{invoice.file.url}</td>
-                      <td>{invoice.amount}</td>
-                      <td> <Button color="primary" onClick={() => viewInvoice(i)}>View Invoice</Button>{' '}</td>
-                      <td> <Button color="primary" onClick={() => AddTransaction(i)}>Add Tx</Button>{' '}</td>
-                    </tr>
-                  </tbody>
-                )
+                  </tr>
+                </thead>
 
-              }) : null}
-            </Table>
+                {invoiceList && invoiceList.length ? invoiceList.map((invoice, i) => {
+                  return (
+                    <tbody>
+                      <tr>
+                        <th scope="row">{i + 1}</th>
+                        <td>{invoice.id}</td>
+                        <td>{invoice.consumer.name}</td>
+                        <td>{invoice.Status}</td>
+                        <td>{invoice.file.url}</td>
+                        <td>{invoice.amount}</td>
+                        <td> <Button color="primary" onClick={() => viewInvoice(i)}>View Invoice</Button>{' '}</td>
+                        {localStorage.getItem("organisation") == "Org2" ?
+                          <td> <Button color="primary" onClick={() => AddTransaction(i)}>Add Tx</Button>{' '}</td>
+
+                          : null}
+                      </tr>
+                    </tbody>
+                  )
+
+                }) : null}
+              </Table>
             </Card>
           </div>
 
@@ -413,10 +414,6 @@ function App() {
 
 
         : null}
-
-
-     
-
 
 
     </div>

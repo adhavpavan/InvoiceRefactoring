@@ -19,7 +19,9 @@ const port = process.env.PORT || constants.port;
 const helper = require('./app/helper')
 const invoke = require('./app/invoke')
 const qscc = require('./app/qscc')
-const query = require('./app/query')
+const query = require('./app/query');
+// const { resolve } = require('path');
+// const { rejects } = require('assert');
 
 app.options('*', cors());
 app.use(cors());
@@ -27,12 +29,38 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
 }));
+app.get('/files/:fileName', async function (req, res) {
+    try {
+
+        console.log(`======================================================================`)
+
+        var fileName = req.params.fileName;
+
+        if (!fileName) {
+            res.json(getErrorMessage('\'file name\''));
+            return;
+        }
+        const fs = require("fs")
+        var data = fs.readFileSync(`./uploads/${fileName}`);
+        res.contentType("application/pdf");
+        // res.set("Content-Disposition", `attachment;filename=invoice.pdf`);
+        res.send(data)
+
+    } catch (error) {
+        const response_payload = {
+            result: null,
+            error: error.name,
+            errorData: error.message
+        }
+        res.send(response_payload)
+    }
+});
 // set secret variable
 app.set('secret', 'thisismysecret');
 app.use(expressJWT({
     secret: 'thisismysecret'
 }).unless({
-    path: ['/users','/users/login', '/register']
+    path: ['/users', '/users/login', '/files']
 }));
 app.use(bearerToken());
 
@@ -41,7 +69,8 @@ logger.level = 'debug';
 
 app.use((req, res, next) => {
     logger.debug('New req for %s', req.originalUrl);
-    if (req.originalUrl.indexOf('/users') >= 0 || req.originalUrl.indexOf('/users/login') >= 0 || req.originalUrl.indexOf('/register') >= 0) {
+    console.log('=====================================New req for %s', req.originalUrl)
+    if (req.originalUrl.indexOf('/users') >= 0 || req.originalUrl.indexOf('/users/login') >= 0 || req.originalUrl.indexOf('/files') >= 0) {
         return next();
     }
     var token = req.token;
@@ -183,6 +212,55 @@ app.post('/users/login', async function (req, res) {
     }
 });
 
+const getDataHash = (data) => {
+
+    try {
+        const crypto = require('crypto');
+        const hash = crypto.createHash('sha1');
+        hash.setEncoding('hex');
+        hash.write(data);
+        hash.end();
+        let dataHash = hash.read();
+        return dataHash
+    } catch (error) {
+        console.log(`Error ocuured while creating file data hash: Error: ${error}`)
+        return null
+    }
+}
+
+
+const savFile = async (args) => {
+    let document = args[1]
+
+    let fileName = Date.now().toString()+ "-"+document.name
+
+    let p =()=> new Promise((resolve, rejects) => {
+        const fs = require('fs')
+         fs.writeFile(`uploads/${fileName}`, new Buffer(document.fileData, 'base64'), (err) => {
+            if (err) {
+                rejects(false)
+            }
+            resolve(`files/${fileName}`)
+        })
+    })
+    try {
+        let result = await p()
+        let invoice = args[0]
+        invoice.file = {
+            "name": fileName,
+            "url": result,
+            "contentHash": getDataHash( new Buffer(document.fileData, 'base64'))
+        }
+
+        return invoice
+    } catch (error) {
+        throw error
+    }
+
+
+
+}
+
 
 // Invoke transaction on chaincode on target peers
 app.post('/channels/:channelName/chaincodes/:chaincodeName', async function (req, res) {
@@ -216,15 +294,33 @@ app.post('/channels/:channelName/chaincodes/:chaincodeName', async function (req
             return;
         }
 
-        let message = await invoke.invokeTransaction(channelName, chaincodeName, fcn, args, req.username, req.orgname, transient);
-        console.log(`message result is : ${message}`)
+        try {
+            let invoice =await savFile(args)
+            args=[]
+            args[0]=`${JSON.stringify(invoice)}`
 
-        const response_payload = {
-            result: message,
-            error: null,
-            errorData: null
+            console.log(`data before sending for invocation`, `${JSON.stringify(invoice)}`)
+
+            let message = await invoke.invokeTransaction(channelName, chaincodeName, fcn, args, req.username, req.orgname, transient);
+            console.log(`message result is : ${message}`)
+    
+            const response_payload = {
+                result: message,
+                error: null,
+                errorData: null
+            }
+            res.send(response_payload);
+        } catch (error) {
+            const response_payload = {
+                result: null,
+                error: true,
+                errorData: error
+            }
+
+            res.send(response_payload);
         }
-        res.send(response_payload);
+
+       
 
     } catch (error) {
         const response_payload = {
@@ -235,6 +331,8 @@ app.post('/channels/:channelName/chaincodes/:chaincodeName', async function (req
         res.send(response_payload)
     }
 });
+
+
 
 app.get('/channels/:channelName/chaincodes/:chaincodeName', async function (req, res) {
     try {
