@@ -295,11 +295,18 @@ app.post('/channels/:channelName/chaincodes/:chaincodeName', async function (req
         }
 
         try {
-            let invoice =await savFile(args)
-            args=[]
-            args[0]=`${JSON.stringify(invoice)}`
 
-            console.log(`data before sending for invocation`, `${JSON.stringify(invoice)}`)
+            if(fcn =="CreateInvoice"){
+                let invoice =await savFile(args)
+                args=[]
+                args[0]=`${JSON.stringify(invoice)}`
+            }
+            
+            // let invoice =await savFile(args)
+            // args=[]
+            // args[0]=`${JSON.stringify(invoice)}`
+
+            // console.log(`data before sending for invocation`, `${JSON.stringify(invoice)}`)
 
             let message = await invoke.invokeTransaction(channelName, chaincodeName, fcn, args, req.username, req.orgname, transient);
             console.log(`message result is : ${message}`)
